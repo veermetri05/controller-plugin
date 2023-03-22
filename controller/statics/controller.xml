@@ -107,9 +107,9 @@
                     <integer value="0" />
                 </param>
                 <param name="bline">
-                    <bline guid="{new_guid()}" type="bline_point" loop="true">
+                    <bline guid="new_guid" type="bline_point" loop="true">
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>-1.1284407377</x>
@@ -154,7 +154,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>-1.1284407377</x>
@@ -199,7 +199,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>1.1284409761</x>
@@ -244,7 +244,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>1.9541296959</x>
@@ -289,7 +289,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>1.9541296959</x>
@@ -334,7 +334,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>1.1284409761</x>
@@ -379,7 +379,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>-1.1284407377</x>
@@ -424,7 +424,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>-1.9541296959</x>
@@ -469,7 +469,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="bline_point">
+                            <composite guid="new_guid" type="bline_point">
                                 <point>
                                     <vector>
                                         <x>-1.9541296959</x>
@@ -539,7 +539,7 @@
                 <param name="wplist">
                     <wplist type="width_point" loop="false">
                         <entry>
-                            <composite guid="{new_guid()}" type="width_point">
+                            <composite guid="new_guid" type="width_point">
                                 <position>
                                     <real value="0.1000000000" />
                                 </position>
@@ -561,7 +561,7 @@
                             </composite>
                         </entry>
                         <entry>
-                            <composite guid="{new_guid()}" type="width_point">
+                            <composite guid="new_guid" type="width_point">
                                 <position>
                                     <real value="0.9000000000" />
                                 </position>
@@ -590,7 +590,7 @@
                 <param name="dilist">
                     <dilist type="dash_item" loop="false">
                         <entry>
-                            <composite guid="{new_guid()}" type="dash_item">
+                            <composite guid="new_guid" type="dash_item">
                                 <offset>
                                     <real value="0.1000000000" />
                                 </offset>
