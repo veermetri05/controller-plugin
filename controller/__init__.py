@@ -38,32 +38,25 @@ def replaceAddWithAnimated(elements: list, elementType: str, addNodeParent: Elem
 
 
 def connectController(typeTransition : str, list : list,  controller : str ):
+    itemSequence = [1, 3, 2,4]
     transitionList = []
     if(len(list) > 4):
       if(typeTransition == "vector"):
           transitionList.append(createVector(list[0][0], list[0][1]))
-          transitionList.append(createVector(list[1][0]-list[0][0], list[1][1]-list[0][1]))
-          transitionList.append(createVector(list[3][0]-list[0][0], list[3][1]-list[0][1]))
-          transitionList.append(createVector(list[2][0]-list[0][0], list[2][1]-list[0][1]))
-          transitionList.append(createVector(list[4][0]-list[0][0], list[4][1]-list[0][1]))
+          for i in itemSequence:
+            transitionList.append(createVector(list[i][0]-list[0][0], list[i][1]-list[0][1]))
       elif(typeTransition == "real"):
           transitionList.append(createReal(list[0]))
-          transitionList.append(createReal(list[1]-list[0]))
-          transitionList.append(createReal(list[3]-list[0]))
-          transitionList.append(createReal(list[2]-list[0]))
-          transitionList.append(createReal(list[4]-list[0]))
+          for i in itemSequence:
+            transitionList.append(createReal(list[i]-list[0]))
       elif(typeTransition == "angle"):
           transitionList.append(createAngle(list[0]))
-          transitionList.append(createAngle(list[1]-list[0]))
-          transitionList.append(createAngle(list[3]-list[0]))
-          transitionList.append(createAngle(list[2]-list[0]))
-          transitionList.append(createAngle(list[4]-list[0]))
+          for i in itemSequence:
+            transitionList.append(createAngle(list[i]-list[0]))
       elif(typeTransition == "color"):
           transitionList.append(createColor(list[0][0], list[0][1], list[0][1], list[0][3]))
-          transitionList.append(createColor(list[1][0]-list[0][0], list[1][1]-list[0][1], list[1][2]-list[0][2], list[1][3]-list[0][3]))
-          transitionList.append(createColor(list[3][0]-list[0][0], list[3][1]-list[0][1], list[3][2]-list[0][2], list[3][3]-list[0][3]))
-          transitionList.append(createColor(list[2][0]-list[0][0], list[2][1]-list[0][1], list[2][2]-list[0][2], list[2][3]-list[0][3]))
-          transitionList.append(createColor(list[4][0]-list[0][0], list[4][1]-list[0][1], list[4][2]-list[0][2], list[4][3]-list[0][3]))
+          for i in itemSequence:
+            transitionList.append(createColor(list[i][0]-list[0][0], list[i][1]-list[0][1], list[i][2]-list[0][2], list[i][3]-list[0][3]))
       myxm = createAdd(
           type=typeTransition,
           lhsLink=createAdd(
