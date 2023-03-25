@@ -5,36 +5,7 @@ from xml.etree import ElementTree
 from controller.builders import *
 
 from controller.draw import drawController
-
-animatedElementStr = pkgutil.get_data(__name__, "statics/animatedElement.xml").decode("utf-8")
-
-def replaceAddWithAnimated(elements: list, elementType: str, addNodeParent: ElementTree.Element, addNode: ElementTree.Element):
-    animated = ElementTree.fromstring(animatedElementStr)
-    firstElement = elements[0]
-    animated.attrib["type"] = elementType
-    if(elementType=="vector"):
-        animated[0][0] = createVector(firstElement[0], firstElement[1])
-        for i in range(1, 5):
-            animated[i][0] = createVector(float(elements[i][0]) + float(firstElement[0]), float(elements[i][1]) + float(firstElement[1]))
-    elif(elementType=="real"):
-        animated[0][0] = createReal(firstElement)
-        for i in range(1, 5):
-            animated[i][0] =  createReal(float(elements[i]) + float(firstElement))
-    elif(elementType=="angle"):
-        animated[0][0] = createAngle(firstElement)
-        for i in range(1, 5):
-            animated[i][0] =  createAngle(float(elements[i]) + float(firstElement))
-
-    elif(elementType=="color"):
-        animated[0][0] = createColor(r=firstElement[0], g=firstElement[1], b=firstElement[2], a=firstElement[3])
-        for i in range(1, 5):
-            animated[i][0] =  createColor(r=float(elements[i][0]) + float(firstElement[0]),
-            g=float(elements[i][1]) + float(firstElement[1]),
-            b=float(elements[i][2]) + float(firstElement[2]),
-            a=float(elements[i][3]) + float(firstElement[3])
-            )
-    addNodeParent.remove(addNode)
-    addNodeParent.append(animated)
+from controller.unbind import unbindJoystick
 
 
 def connectController(typeTransition : str, list : list,  controller : str ):
@@ -246,12 +217,17 @@ def generateJoystick(root, fileRoot):
 
 
 def findInnerChild(elem, root):
-    for layer in elem.findall(".//layer[@type='group']"):
+    for layer in elem.findall(".//layer"):
         if("desc" in layer.attrib):
+            if( re.search( "joystick_unbind_.+" , layer.attrib["desc"]) ):
+                if( filter( lambda a : re.search("joystick_unbind_.+" , a.attrib["desc"]), layer.findall(".//layer")) ):
+                    findInnerChild(elem = layer, root = root)
+                    layer.attrib["desc"] = layer.attrib["desc"][16:]
+                    unbindJoystick(root = layer, fileRoot=root)
+                    print(layer.attrib["desc"])
             if( re.search( "joystick_.+" , layer.attrib["desc"]) ):
-                if( filter( lambda a : re.search("joystick_.+" , a.attrib["desc"]), layer.findall(".//layer[@type='group']")) ):
-                    findInnerChild(elem = layer)
+                if( filter( lambda a : re.search("joystick_.+" , a.attrib["desc"]), layer.findall(".//layer")) ):
+                    findInnerChild(elem = layer, root = root)
                     layer.attrib["desc"] = layer.attrib["desc"][9:]
                     generateJoystick(root = layer, fileRoot=root)
                     print(layer.attrib["desc"])
-                

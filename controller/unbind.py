@@ -1,14 +1,47 @@
 import pkgutil
 import re
 from xml.etree import ElementTree
-from controller import replaceAddWithAnimated
+
+from controller.builders import createAngle, createColor, createReal, createVector
 
 nodeTypes = ["vector", "real", "angle", "color"]
 
 patternRegex = {}
 
 for node in nodeTypes:
-    patternRegex[node] = pkgutil.get_data(__name__, "statics/regex/vector.txt").decode("utf-8")
+    patternRegex[node] = pkgutil.get_data(__name__, f"statics/regex/{node}.txt").decode("utf-8")
+
+
+animatedElementStr = pkgutil.get_data(__name__, "statics/animatedElement.xml").decode("utf-8")
+
+def replaceAddWithAnimated(elements: list, elementType: str, addNodeParent: ElementTree.Element, addNode: ElementTree.Element):
+    animated = ElementTree.fromstring(animatedElementStr)
+    firstElement = elements[0]
+    animated.attrib["type"] = elementType
+    if(elementType=="vector"):
+        animated[0][0] = createVector(firstElement[0], firstElement[1])
+        for i in range(1, 5):
+            animated[i][0] = createVector(float(elements[i][0]) + float(firstElement[0]), float(elements[i][1]) + float(firstElement[1]))
+    elif(elementType=="real"):
+        animated[0][0] = createReal(firstElement)
+        for i in range(1, 5):
+            animated[i][0] =  createReal(float(elements[i]) + float(firstElement))
+    elif(elementType=="angle"):
+        animated[0][0] = createAngle(firstElement)
+        for i in range(1, 5):
+            animated[i][0] =  createAngle(float(elements[i]) + float(firstElement))
+
+    elif(elementType=="color"):
+        animated[0][0] = createColor(r=firstElement[0], g=firstElement[1], b=firstElement[2], a=firstElement[3])
+        for i in range(1, 5):
+            animated[i][0] =  createColor(r=float(elements[i][0]) + float(firstElement[0]),
+            g=float(elements[i][1]) + float(firstElement[1]),
+            b=float(elements[i][2]) + float(firstElement[2]),
+            a=float(elements[i][3]) + float(firstElement[3])
+            )
+    addNodeParent.remove(addNode)
+    addNodeParent.append(animated)
+
 
 def unbindVectors(layer: ElementTree.Element):
     for addNodeParent in layer.findall(".//add[@type='vector']/.."):
@@ -67,8 +100,8 @@ def unbindColors(layer: ElementTree.Element):
                 replaceAddWithAnimated(elements=elements, elementType="color", addNodeParent=addNodeParent, addNode=addNode)
 
 def unbindJoystick(root, fileRoot):
+  unbindColors(root)
   unbindVectors(root)
   unbindReals(root)
-  unbindColors(root)
   unbindAngles(root)
   
