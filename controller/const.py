@@ -1,0 +1,1 @@
+nodeTypes = ["real", "angle", "color", "vector"]

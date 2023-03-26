@@ -5,13 +5,16 @@ from xml.etree import ElementTree
 def new_guid():
     return uuid.uuid4().hex
 
-
-def createReal(value, withGuid = False ):
+def createReal(value, id=None, withGuid = False ):
     real = ElementTree.Element('real')
     if(withGuid):
         withGuid = new_guid()
         real.set('guid', withGuid)
     real.set('value', str(value))
+
+    if (id is not None):
+        real.set('id', id)
+
     return real
 
 
@@ -97,7 +100,7 @@ def createReciprocal(toLink, linkExported=None, type='real'):
     return reciprocal
 
 
-def createScale(scalarLink, type=None, linkExported=None, toLink=None):
+def createScale(type="real", scalarLink=None, linkExported=None, toLink=None, scalarLinkExported=None):
     scale = ElementTree.Element('scale')
     scale.set('type', str(type))
     if linkExported is not None:
@@ -107,11 +110,13 @@ def createScale(scalarLink, type=None, linkExported=None, toLink=None):
         link = ElementTree.SubElement(scale, 'link')
         link.append(toLink)
 
-    scalar = ElementTree.SubElement(scale, 'scalar')
-    scalar.append(scalarLink)
+    if scalarLink is not None:
+        scalar = ElementTree.SubElement(scale, 'scalar')
+        scalar.append(scalarLink)
+    else:
+        scale.set("scalar", scalarLinkExported)
 
     return scale
-
 
 def createSubtract(lhsLink, rhsLink, scalarLink, type):
     subtract = ElementTree.Element('subtract')
@@ -188,3 +193,27 @@ def createWaypoint(time: str, before: str, after: str, child: ElementTree.Elemen
     waypoint.set("before", before)
     waypoint.set("after", after)
     waypoint.append(child)
+
+def createNode(value, nodeType=None):
+    if nodeType == "real":
+        return createReal(value)
+    elif nodeType == "angle":
+        return createAngle(value)
+    elif nodeType == "vector":
+        return createVector(*value)
+    elif nodeType == "color":
+        return createColor(*value)
+
+
+def getDefs(root):
+    for item in root:
+        if item.tag == "defs":
+            exportedDefs = item
+    try:
+        exportedDefs
+    except NameError:
+        exportedDefs = ElementTree.Element('defs')
+        root.insert(0, exportedDefs)
+
+    return exportedDefs
+
