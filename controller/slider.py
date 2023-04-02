@@ -70,20 +70,28 @@ def connectSlider(parentsToConnect, nodeType, controllerIdsList):
 def generateSlider(fileRoot,  layer ):
         exportedDefs = getDefs(fileRoot)
         controllerIdsList = []
+        animatedAtUniqueTime = set({})
+        for nodeType in nodeTypes:
+            animatedElements = layer.findall(f".//*/animated[@type='{nodeType}']/..")
+            for parent in animatedElements:
+                animated = parent[0]
+                for waypoint in animated:
+                     waypointTime = waypoint.attrib['time']    
+                     animatedAtUniqueTime.add(waypointTime)
+        for _ in range(len(animatedAtUniqueTime) - 1):
+            sliderId = "Slider " + \
+            layer.attrib['desc']         + "_" + str(random.randint(1000, 9999))
+            controllerIdsList.append(sliderId)
+            exportedDefs.append(createReal(value=0, id=sliderId))
+            drawSliderUI(fileRoot, sliderId)
+        exportedValues = list(exportedDefs)
+        exportedDefs.clear()
+        for ele in reversed(exportedValues):
+            exportedDefs.append(ele)
         for nodeType in nodeTypes:
             parentsToConnectSlider = []
-            for parent in layer.findall(f".//*/animated[@type='{nodeType}']/.."):
-                animated = parent[0]
-                for _ in range(len(animated) - 1):
-                    sliderId = "Slider " + \
-                    layer.attrib['desc']         + "_" + str(random.randint(1000, 9999))
-                    controllerIdsList.append(sliderId)
-                    exportedDefs.append(createReal(value=0, id=sliderId))
-                    drawSliderUI(fileRoot, sliderId)
-                exportedValues = list(exportedDefs)
-                exportedDefs.clear()
-                for ele in reversed(exportedValues):
-                    exportedDefs.append(ele)
+            animatedElements = layer.findall(f".//*/animated[@type='{nodeType}']/..")
+            for parent in animatedElements:
                 parentsToConnectSlider.append(parent)
             connectSlider(parentsToConnectSlider, nodeType,
                         controllerIdsList=controllerIdsList)
