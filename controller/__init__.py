@@ -218,10 +218,7 @@ def generateJoystick(root, fileRoot):
 
 
 def findInnerChild(elem, root):
-    if(len(elem.findall("layer/param[@name='canvas']/")) != 0):
-        canvas = elem.findall("layer/param[@name='canvas']/")[0]
-        findInnerChild(elem = canvas, root = root)
-        for layer in canvas.findall("layer"):
+        for layer in elem.findall("layer"):
             if("desc" in layer.attrib):
                 if( re.search( "joystick_unbind_.+" , layer.attrib["desc"]) ):
                     layer.attrib["desc"] = layer.attrib["desc"][16:]
@@ -232,3 +229,6 @@ def findInnerChild(elem, root):
                 if( re.search( "slider_.+" , layer.attrib["desc"]) ):
                     layer.attrib["desc"] = layer.attrib["desc"][7:] 
                     generateSlider(fileRoot=root,  layer=layer )
+        if(len(elem.findall("layer/param[@name='canvas']/")) != 0):
+            canvas = elem.findall("layer/param[@name='canvas']/")[0]
+            findInnerChild(elem = canvas, root = root)
