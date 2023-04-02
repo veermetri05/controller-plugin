@@ -1,5 +1,6 @@
 
 import math
+import random
 from controller.builders import createAdd, createNode, createReal, createScale, getDefs
 from controller.draw import drawSliderUI
 from controller.const import nodeTypes
@@ -46,55 +47,43 @@ def createAdditions(valuesToAdd,  controllerIds, nodeType):
     return addConvertedList[0]
 
 
-def connectSlider(parentsToConnect, controllerIdsList, nodeType, fps, keyframes ):
+def connectSlider(parentsToConnect, nodeType, controllerIdsList):
         for parent in parentsToConnect:
             animated = parent[0]
             valuesToPass = []
             for waypoint in animated:
-                for keyframe in keyframes:
-                    waypointAtFrame = int(
-                        round(float(waypoint.attrib['time'].replace("s", ""))*fps))
-                    if (waypointAtFrame == keyframe):
-                        if nodeType == "real" or nodeType == "angle":
-                                valuesToPass.append(
-                                    float(list(waypoint)[0].attrib['value']))
-                        if nodeType == "vector":
-                                valuesToPass.append([float(list(list(waypoint)[0])[0].text), float(
-                                    list(list(waypoint)[0])[1].text)])
-                        if nodeType == "color":
-                                valuesToPass.append([float(list(list(waypoint)[0])[0].text), float(list(list(waypoint)[0])[
-                                                    1].text), float(list(list(waypoint)[0])[2].text), float(list(list(waypoint)[0])[3].text)])
+                if nodeType == "real" or nodeType == "angle":
+                        valuesToPass.append(
+                            float(list(waypoint)[0].attrib['value']))
+                if nodeType == "vector":
+                        valuesToPass.append([float(list(list(waypoint)[0])[0].text), float(
+                            list(list(waypoint)[0])[1].text)])
+                if nodeType == "color":
+                        valuesToPass.append([float(list(list(waypoint)[0])[0].text), float(list(list(waypoint)[0])[
+                                            1].text), float(list(list(waypoint)[0])[2].text), float(list(list(waypoint)[0])[3].text)])
             for i in parent:
                 parent.remove(i)
+            print(valuesToPass)
             parent.append(createAdditions(valuesToPass, controllerIdsList, nodeType))
 
 
-def generateSlider(fileRoot, keyFramesAt, layer, controllerIdsList, fps):
+def generateSlider(fileRoot,  layer ):
         exportedDefs = getDefs(fileRoot)
-        for i in range(1, len(keyFramesAt)):
-            sliderId = "Slider " + \
-        layer.attrib['desc']         + "_" + str(keyFramesAt[i])
-            controllerIdsList.append(sliderId)
-            exportedDefs.append(createReal(value=0, id=sliderId))
-            drawSliderUI(fileRoot, sliderId)
-
-        exportedValues = list(exportedDefs)
-        exportedDefs.clear()
-        for ele in reversed(exportedValues):
-            exportedDefs.append(ele)
+        controllerIdsList = []
         for nodeType in nodeTypes:
             parentsToConnectSlider = []
             for parent in layer.findall(f".//*/animated[@type='{nodeType}']/.."):
                 animated = parent[0]
-                checkList = []
-                intialWaypoint = list(animated)[0]
-                for waypoint in animated:
-                    for keyframe in keyFramesAt:
-                        waypointAtFrame = int(
-                            round(float(waypoint.attrib['time'].replace("s", ""))*fps))
-                        if (waypointAtFrame == keyframe):
-                            checkList.append(waypointAtFrame)
-                if (checkList == keyFramesAt):
-                    parentsToConnectSlider.append(parent)
-            connectSlider(parentsToConnectSlider, controllerIdsList, nodeType,
-                        fps=fps, keyframes = keyFramesAt)
+                for _ in range(len(animated) - 1):
+                    sliderId = "Slider " + \
+                    layer.attrib['desc']         + "_" + str(random.randint(1000, 9999))
+                    controllerIdsList.append(sliderId)
+                    exportedDefs.append(createReal(value=0, id=sliderId))
+                    drawSliderUI(fileRoot, sliderId)
+                exportedValues = list(exportedDefs)
+                exportedDefs.clear()
+                for ele in reversed(exportedValues):
+                    exportedDefs.append(ele)
+                parentsToConnectSlider.append(parent)
+            connectSlider(parentsToConnectSlider, nodeType,
+                        controllerIdsList=controllerIdsList)

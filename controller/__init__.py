@@ -218,44 +218,17 @@ def generateJoystick(root, fileRoot):
 
 
 def findInnerChild(elem, root):
-    keyframes = root.findall('keyframe')
-    keyFramesAt = []
-    controllerIdsList = []
-    fps = int(float(root.attrib['fps']))
-
-    # Calculate the frame number by the time parameter of keyframe tag
-    for i in range(len(keyframes)):
-        timeValue = keyframes[i].attrib['time'].split(' ')
-        totalFrames = 0
-        timeValue = list(filter(None, timeValue))
-        if (len(timeValue) > 1):
-            timeValue[0] = timeValue[0].replace('s', "")
-            totalFrames += int(timeValue[0]) * fps
-            timeValue[1] = timeValue[1].replace("f", "")
-            totalFrames += int(timeValue[1])
-        else:
-            if (timeValue[0].find("f") != -1):
-                timeValue[0] = timeValue[0].replace('f', "")
-                totalFrames += int(timeValue[0])
-            else:
-                timeValue[0] = timeValue[0].replace('s', "")
-                totalFrames += int(timeValue[0]) * fps
-        keyFramesAt.append(totalFrames)
-
-    for layer in elem.findall(".//layer"):
-        if("desc" in layer.attrib):
-            if( re.search( "joystick_unbind_.+" , layer.attrib["desc"]) ):
-                if( filter( lambda a : re.search("joystick_unbind_.+" , a.attrib["desc"]), layer.findall(".//layer")) ):
-                    findInnerChild(elem = layer, root = root)
+    if(len(elem.findall("layer/param[@name='canvas']/")) != 0):
+        canvas = elem.findall("layer/param[@name='canvas']/")[0]
+        findInnerChild(elem = canvas, root = root)
+        for layer in canvas.findall("layer"):
+            if("desc" in layer.attrib):
+                if( re.search( "joystick_unbind_.+" , layer.attrib["desc"]) ):
                     layer.attrib["desc"] = layer.attrib["desc"][16:]
                     unbindJoystick(root = layer, fileRoot=root)
-                    print(layer.attrib["desc"])
-            if( re.search( "joystick_.+" , layer.attrib["desc"]) ):
-                if( filter( lambda a : re.search("joystick_.+" , a.attrib["desc"]), layer.findall(".//layer")) ):
-                    findInnerChild(elem = layer, root = root)
+                if( re.search( "joystick_.+" , layer.attrib["desc"]) ):
                     layer.attrib["desc"] = layer.attrib["desc"][9:]
                     generateJoystick(root = layer, fileRoot=root)
-                    print(layer.attrib["desc"])
-            if( re.search( "slider_.+" , layer.attrib["desc"]) ):
-                layer.attrib["desc"] = layer.attrib["desc"][7:] 
-                generateSlider(fileRoot=root, keyFramesAt=keyFramesAt, layer=layer, controllerIdsList=controllerIdsList, fps=fps)
+                if( re.search( "slider_.+" , layer.attrib["desc"]) ):
+                    layer.attrib["desc"] = layer.attrib["desc"][7:] 
+                    generateSlider(fileRoot=root,  layer=layer )
