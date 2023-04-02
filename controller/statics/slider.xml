@@ -1,4 +1,4 @@
-<layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="{sliderName}">
+<layer type="group" active="true" exclude_from_rendering="true" version="0.3" desc="{sliderName}">
     <param name="z_depth">
         <real value="0.0000000000" />
     </param>
