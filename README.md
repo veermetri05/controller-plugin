@@ -19,7 +19,7 @@ A plugins to add Joystick and Slider controls to your Synfig animations.
 
 ## Installation
 
-Download the zip file, extract it's content to the plugins folder.
+Download the [zip file](https://github.com/veermetri05/controller-plugin/archive/refs/heads/main.zip), extract it's content to the plugins folder or select the zip file for installation.
 
 
 ## How to use
